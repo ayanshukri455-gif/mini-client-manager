@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Mini Client Manager — лесно управление на клиенти.">
+  <title>Mini Client Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#overview" aria-label="Mini Client Manager начало">
+        <span class="brand-mark">M</span><span>mini<span class="brand-light">manager</span></span>
+      </a>
+      <div class="workspace-label">РАБОТНО ПРОСТРАНСТВО</div>
+      <nav class="main-nav" aria-label="Основно меню">
+        <a class="nav-link active" href="#overview"><span class="nav-icon">▦</span> Табло</a>
+        <a class="nav-link" href="#clients"><span class="nav-icon">♙</span> Клиенти <span class="nav-count" id="nav-count">5</span></a>
+        <a class="nav-link" href="#reports"><span class="nav-icon">▥</span> Отчети</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="help-card"><div class="help-icon">✦</div><strong>Нужда от помощ?</strong><p>Твоят малък CRM помощник е тук.</p><a href="mailto:hello@example.com">Свържи се с нас ↗</a></div>
+        <div class="profile"><div class="avatar avatar-purple">АД</div><div><strong>Алекс Димов</strong><small>Администратор</small></div><span class="profile-more">···</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content" id="overview">
+      <header class="topbar"><div class="breadcrumb">Работно пространство <span>/</span> <strong>Табло</strong></div><div class="topbar-right"><span class="today" id="today-label"></span><button class="icon-button" aria-label="Известия">♧<i></i></button><div class="avatar avatar-purple small-avatar">АД</div></div></header>
+      <section class="page-heading"><div><div class="eyebrow">НЕДЕЛЕН ПРЕГЛЕД</div><h1>Добре дошъл, Алекс <span>✦</span></h1><p>Ето какво се случва с клиентите ти днес.</p></div><button class="primary-button" id="open-modal"><span>＋</span> Добави клиент</button></section>
+
+      <section class="stats-grid" aria-label="Статистика">
+        <article class="stat-card"><div class="stat-top"><span>Общо клиенти</span><span class="stat-icon purple">♙</span></div><div class="stat-value" id="total-clients">5</div><div class="stat-foot"><span class="positive">↗ 12.5%</span> спрямо миналия месец</div></article>
+        <article class="stat-card"><div class="stat-top"><span>Активни клиенти</span><span class="stat-icon green">✓</span></div><div class="stat-value" id="active-clients">4</div><div class="stat-foot"><span class="positive">↗ 8.2%</span> спрямо миналия месец</div></article>
+        <article class="stat-card"><div class="stat-top"><span>Нови запитвания</span><span class="stat-icon orange">✉</span></div><div class="stat-value">8</div><div class="stat-foot"><span class="positive">↗ 4.3%</span> спрямо миналия месец</div></article>
+      </section>
+
+      <section class="content-card" id="clients">
+        <div class="card-heading"><div><h2>Твоите клиенти</h2><p>Управлявай контактите си на едно място.</p></div><div class="table-actions"><label class="search-box"><span>⌕</span><input id="search-input" type="search" placeholder="Търси клиент..."></label><button class="filter-button" id="clear-search">Изчисти</button></div></div>
+        <div class="table-wrap"><table><thead><tr><th>КЛИЕНТ</th><th>ФИРМА</th><th>ИМЕЙЛ</th><th>СТАТУС</th><th class="actions-heading">ДЕЙСТВИЯ</th></tr></thead><tbody id="client-table"></tbody></table><div class="empty-state" id="empty-state" hidden>Няма намерени клиенти. Опитай с друга дума.</div></div>
+        <div class="table-footer"><span id="results-label">Показани 5 от 5 клиента</span><span class="footer-note">Данните се пазят локално в браузъра.</span></div>
+      </section>
+      <footer class="page-footer">© 2026 Mini Client Manager <span>Създадено с грижа за твоите клиенти.</span></footer>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="modal-backdrop" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-heading"><div><div class="eyebrow">НОВ КОНТАКТ</div><h2 id="modal-title">Добави клиент</h2><p>Попълни данните, за да добавиш клиент.</p></div><button class="close-button" id="close-modal" aria-label="Затвори">×</button></div>
+      <form id="client-form">
+        <label for="client-name">Име и фамилия</label><input id="client-name" name="name" placeholder="напр. Иван Петров" required maxlength="80">
+        <label for="client-company">Фирма</label><input id="client-company" name="company" placeholder="напр. Bright Studio" required maxlength="100">
+        <label for="client-email">Имейл адрес</label><input id="client-email" name="email" type="email" placeholder="ivan@example.com" required maxlength="120">
+        <div class="form-error" id="form-error" role="alert"></div>
+        <div class="modal-actions"><button type="button" class="secondary-button" id="cancel-modal">Отказ</button><button type="submit" class="primary-button">＋ Запази клиента</button></div>
+      </form>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
+</html>
