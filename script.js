@@ -14,6 +14,7 @@ const modalBackdrop = document.querySelector('#modal-backdrop');
 const form = document.querySelector('#client-form');
 const searchInput = document.querySelector('#search-input');
 let clients = loadClients();
+let editingClientId = null;
 let toastTimer;
 
 function loadClients() {
@@ -71,6 +72,13 @@ function renderClients() {
     statusCell.append(status);
     const actionsCell = document.createElement('td');
     actionsCell.className = 'row-actions';
+    const editButton = document.createElement('button');
+    editButton.type = 'button';
+    editButton.className = 'edit-button';
+    editButton.textContent = 'Редактирай';
+    editButton.setAttribute('aria-label', `Редактирай ${client.name}`);
+    editButton.addEventListener('click', () => editClient(client.id));
+
     const deleteButton = document.createElement('button');
     deleteButton.type = 'button';
     deleteButton.className = 'delete-button';
@@ -78,7 +86,7 @@ function renderClients() {
     deleteButton.setAttribute('aria-label', `Изтрий ${client.name}`);
     deleteButton.title = 'Изтрий клиента';
     deleteButton.addEventListener('click', () => deleteClient(client.id));
-    actionsCell.append(deleteButton);
+    actionsCell.append(editButton, deleteButton);
     row.append(nameCell, companyCell, emailCell, statusCell, actionsCell);
     tableBody.append(row);
   });
@@ -91,6 +99,30 @@ function renderClients() {
 }
 
 function openModal() {
+  editingClientId = null;
+  form.reset();
+  document.querySelector('#modal-eyebrow').textContent = 'НОВ КОНТАКТ';
+  document.querySelector('#modal-title').textContent = 'Добави клиент';
+  document.querySelector('#modal-description').textContent = 'Попълни данните, за да добавиш клиент.';
+  document.querySelector('#submit-client-button').textContent = '＋ Запази клиента';
+  document.querySelector('#form-error').textContent = '';
+  modalBackdrop.hidden = false;
+  document.querySelector('#client-name').focus();
+}
+
+function editClient(id) {
+  const client = clients.find(item => item.id === id);
+  if (!client) return;
+
+  editingClientId = id;
+  document.querySelector('#client-name').value = client.name;
+  document.querySelector('#client-company').value = client.company;
+  document.querySelector('#client-email').value = client.email;
+  document.querySelector('#modal-eyebrow').textContent = 'РЕДАКЦИЯ НА КОНТАКТ';
+  document.querySelector('#modal-title').textContent = 'Редактирай клиент';
+  document.querySelector('#modal-description').textContent = 'Промени необходимите данни и запази.';
+  document.querySelector('#submit-client-button').textContent = '✓ Запази промените';
+  document.querySelector('#form-error').textContent = '';
   modalBackdrop.hidden = false;
   document.querySelector('#client-name').focus();
 }
@@ -98,6 +130,7 @@ function openModal() {
 function closeModal() {
   modalBackdrop.hidden = true;
   form.reset();
+  editingClientId = null;
   document.querySelector('#form-error').textContent = '';
 }
 
@@ -120,10 +153,26 @@ function addClient(event) {
     errorBox.textContent = 'Моля, попълни всички полета.';
     return;
   }
-  if (clients.some(client => client.email.toLowerCase() === email)) {
+  const emailAlreadyUsed = clients.some(client =>
+    client.email.toLowerCase() === email && client.id !== editingClientId
+  );
+  if (emailAlreadyUsed) {
     errorBox.textContent = 'Вече има клиент с този имейл адрес.';
     return;
   }
+
+  if (editingClientId !== null) {
+    clients = clients.map(client => client.id === editingClientId
+      ? { ...client, name, company, email }
+      : client
+    );
+    saveClients();
+    renderClients();
+    closeModal();
+    showToast('Промените бяха запазени успешно.');
+    return;
+  }
+
   clients.unshift({ id: Date.now(), name, company, email, status: 'Активен' });
   saveClients();
   searchInput.value = '';
