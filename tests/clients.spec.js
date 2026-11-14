@@ -3,7 +3,8 @@ import { test, expect } from '@playwright/test';
 const storageKey = 'mini-client-manager-clients-v1';
 
 test.beforeEach(async ({ page }) => {
-  await page.addInitScript(key => localStorage.removeItem(key), storageKey);
+  // Playwright creates an isolated browser context for each test, so localStorage
+  // starts clean without clearing it again on every page navigation/reload.
   await page.goto('/');
 });
 
